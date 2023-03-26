@@ -59,13 +59,13 @@ def add_to_opensearch(body, key):
     )
     print("Client Info: ", client.info())
 
-    # response = client.index(
-    #     index = "photos",
-    #     body = body,
-    #     id = key,
-    #     refresh = True
-    # )
-    # print("Add document: ", response)
+    response = client.index(
+        index = "photos",
+        body = body,
+        id = key,
+        refresh = True
+    )
+    print("Add document: ", response)
 
     
 
