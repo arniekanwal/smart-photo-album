@@ -11,63 +11,57 @@
     
     <!--===== Boxicons CSS =====-->
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!--<title>Image Gallery with Search Box</title>--> 
 </head>
 <body>
-    <h1>Smart Photo Album</h1>
+    <h1 style="margin: 5px;">Smart Photo Album</h1>
 
-    <div class="app-description">
-        This is an app that allows you to upload your photos
-        into a smart album. Labels are automatically detected within your image
-        using AWS Rekognition and stored in an ElasticSearch instance for quick/dynamic 
-        photo lookups. Or you can perform the search with your voice using AWS Transcribe 
-        to transcribe speach to text in real-time.
-    <div>
-
-    <br></br>
-
-    <div class="upload-section">
+    <div class="upload">
         <label> Upload a new Photo: </label>
         <input type="file" id="myFile" />
-        <input type="submit" value="submit"/>
+        <br>
+        <div class="labels">
+            <input type="text", placeholder="Enter additional labels [optional]">
+        </div>
+        <input type="submit" value="Upload"/>
     </div>
 
     <div class="container">
         <div class="search-box">
-            <i class="bx bx-search"></i>
             <input type="text" placeholder="Search through photos">
-            <button type="submit"><i class=""></i></button>
+            <button style="font-size:24px"><i class="fa fa-microphone"></i></button>
         </div>
 
         <div class="images">
             <div class="image-box" data-name="spiderman">
                 <img src="../photos/photo1.jpeg" alt="">
-                <h6>spiderman</h6>
+                <h6>Wolves</h6>
             </div>
             <div class="image-box" data-name="joker">
                 <img src="../photos/photo2.jpeg" alt="">
-                <h6>joker</h6>
+                <h6>Highway</h6>
             </div>
             <div class="image-box" data-name="ironman">
                 <img src="../photos/photo3.jpeg" alt="">
-                <h6>ironman</h6>
+                <h6>Woman</h6>
             </div>
             <div class="image-box" data-name="passenger">
                 <img src="../photos/photo4.jpeg" alt="">
-                <h6>passenger</h6>
+                <h6>Swamp</h6>
             </div>
             <div class="image-box" data-name="space">
                 <img src="../photos/photo5.jpeg" alt="">
-                <h6>the space</h6>
+                <h6>Sky</h6>
             </div>
             <div class="image-box" data-name="spiderman">
                 <img src="../photos/photo6.jpeg" alt="">
-                <h6>spiderman 2</h6>
+                <h6>Mountains</h6>
             </div>
             <div class="image-box" data-name="universe">
                 <img src="../photos/photo7.jpeg" alt="">
-                <h6>the universe</h6>
+                <h6>Ferris Wheel</h6>
             </div>
             <div class="image-box" data-name="spiderman">
                 <!--<img src="images/spiderman3.jpg" alt="">-->
@@ -84,7 +78,7 @@
         </div>
     </div>
 
-    <!--<script src="script.js"></script>-->
+    <script src="./assets/js/script.js"></script>
 </body>
 </html>
  

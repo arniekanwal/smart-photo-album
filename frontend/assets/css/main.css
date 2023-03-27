@@ -86,3 +86,26 @@
      font-weight: 400;
      text-transform: capitalize;
  }
+
+ .upload {
+    margin-left: 5px;
+ }
+
+ .labels {
+    position: relative;
+     height: 42px;
+     max-width: 400px;
+     /* margin: 0 auto;
+     margin-bottom: 40px; */
+ }
+ .labels input{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    outline: none;
+    border: none;
+    background-color: #323334;
+    padding: 5px;
+    color: #fff;
+    border-radius: 6px;
+}
