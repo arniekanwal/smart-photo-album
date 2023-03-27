@@ -4,14 +4,29 @@ import datetime
 import time
 import os
 import logging
-from uuid import uuid4
+from opensearchpy import OpenSearch, RequestsHttpConnection 
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
+def opensearch_query(host, query):
+    host = 'search-photos-x5sreqhncdhwvdz35exej4owri.us-east-1.es.amazonaws.com' 
+    auth = (os.getenv("opensearch_user"), os.getenv("opensearch_pwd"))
+
+    client = OpenSearch(
+        hosts = [{'host': host, 'port': 443}],
+        http_auth = auth,
+        use_ssl = True,
+        verify_certs = True,
+        connection_class = RequestsHttpConnection
+    )
+    print("Client Info: ", client.info())
+    
+    es_result=client.search(index="photos", body=query)    # response=es.get()
+    return es_result
+
 
 """ --- Helpers to build responses which match the structure of the necessary dialog actions --- """
-
 def get_slots(intent_request):
     return intent_request['currentIntent']['slots']
 
@@ -52,7 +67,7 @@ def delegate(session_attributes, slots):
     }
 
 
-""" --- Helper Functions --- """
+""" --- Validation Functions --- """
 
 def build_validation_result(is_valid, violated_slot, message_content):
     if message_content is None:
@@ -67,94 +82,22 @@ def build_validation_result(is_valid, violated_slot, message_content):
         'message': {'contentType': 'PlainText', 'content': message_content}
     }
 
-def parse_int(n):
-    try:
-        return int(n)
-    except ValueError:
-        return float('nan')
 
-
-def isvalid_date(date):
-    verbal_dates = ['today', 'tomorrow', 'tmrw', 'day after tomorrow', 'day after tmrw']
-    if date.lower() in verbal_dates:
-        return True
-    
-    try:
-        dateutil.parser.parse(date)
-        return True
-    except ValueError:
-        return False
-    
-def isvalid_time(time):
-    try:
-        datetime.datetime.strptime(time, '%H:%M')
-        return True
-    except ValueError:
-        return False
-    
-    
-def isvalid_city(city):
-    valid_cities = ['new york', 'nyc', 'ny', 'manhattan']
-    return city.lower() in valid_cities
-
-
-def isvalid_cuisine(cuisine):
-    cuisines = ["thai", "chinese", "mexican", "indian", "sushi", "italian", "pizza", "french", "ramen", "korean"]
-    return cuisine.lower() in cuisines
-
-
-def validate_dining(location, cuisine, dining_date, dining_time, people, phone_number):
-    if location is not None:
-        if not isvalid_city(location.lower()):
-            return build_validation_result(False, 'location', 'We currently do not offer recommendations for that city. Would you like to try somewhere else?')
-
-    if cuisine is not None:
-        if not isvalid_cuisine(cuisine.lower()):
-            return build_validation_result(False, 'cuisine', 'We currently do not offer recommendations for that cuisine. Would you like to try something else?')    
-
-    if dining_date is not None:
-        if not isvalid_date(dining_date):
-            return build_validation_result(False, 'dining_date', 'I did not understand that, what date do you want to reserve')
-        elif datetime.datetime.strptime(dining_date, '%Y-%m-%d').date() < datetime.date.today():
-            return build_validation_result(False, 'dining_date', 'You can make a reservation from today onwards. What day would you prefer?')
-        
-    if phone_number is not None:
-        if len(phone_number) != 10:
-            return build_validation_result(False, 'phone_number', "Please enter a valid phone number.")
-        
-    if dining_time is not None and not isvalid_time(dining_time):
-        return build_validation_result(False, 'dining_time', "Enter a valid time.")
-        
-    if people is not None and not parse_int(people):
-        return build_validation_result(False, 'count', 'Sorry, I could not understand that. How many guests will be attending?')
-
+def validate_dining(searchterm):
     return build_validation_result(True, None, None)
 
 
 """ --- Functions that control the bot's behavior --- """
 
-def gather_dining_info(intent_request):
+def disambiguate_search(intent_request):
     source = intent_request['invocationSource']    
     slots = get_slots(intent_request)
     
-    dining_time = slots["dining_time"]
-    cuisine = slots["cuisine"]
-    location = slots["location"]
-    people = slots["people"]
-    dining_date = slots['dining_date']
-    phone_number = slots["phone_number"]
-    
-    slot_dict = {
-        'dining_time': dining_time,
-        'dining_date': dining_date,
-        'cuisine': cuisine,
-        'location': location,
-        'people': people,
-        'phone_number': phone_number
-    }
+    searchterm = slots["searchterm"]
+    slot_dict = { 'searchterm': searchterm }
 
     if source == 'DialogCodeHook':
-        validation_result = validate_dining(location, cuisine, dining_date, dining_time, people, phone_number)
+        validation_result = validate_dining()
         if not validation_result['isValid']:
             slots[validation_result['violatedSlot']] = None
             return elicit_slot(intent_request['sessionAttributes'],
@@ -169,9 +112,8 @@ def gather_dining_info(intent_request):
 
     # Fulfillment code hook, send information to queue
     request_id='myuser'
-    # print(intent_request)
-    # print(slot_dict)
-    # push_to_sqs(slot_dict, request_id)
+    print(intent_request)
+    print(slot_dict)
     return close(intent_request['sessionAttributes'],
                  'Fulfilled',
                  {'contentType': 'PlainText',
@@ -191,8 +133,8 @@ def dispatch(intent_request):
     intent_name = intent_request['currentIntent']['name']
 
     # Dispatch to your bot's intent handlers
-    if intent_name == 'DiningIntent':
-        return gather_dining_info(intent_request)
+    if intent_name == 'SearchIntent':
+        return disambiguate_search(intent_request)
 
     raise Exception('Intent with name ' + intent_name + ' not supported')
 
@@ -208,10 +150,14 @@ def lambda_handler(event, context):
     # By default, treat the user request as coming from the America/New_York time zone.
     os.environ['TZ'] = 'America/New_York'
     time.tzset()
-    logger.debug('event.bot.name={}'.format(event['bot']['name']))
+    # logger.debug('event.bot.name={}'.format(event['bot']['name']))
 
-    return dispatch(event)
+    dispatch(event)
+    es_host = 'search-diningsearch-hgalbkaccpydlhouymrgk3k23a.us-east-1.es.amazonaws.com' 
+    
 
+    
+    
 
 
 
