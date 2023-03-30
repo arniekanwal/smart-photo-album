@@ -33,14 +33,13 @@
 <body>
     <h1 style="margin: 5px;">Smart Photo Album</h1>
 
-    <div class="upload">
+    <div class="upload" id="form">
         <label> Upload a new Photo: </label>
-        <input type="file" id="myFile" />
-        <br>
+        <input type="file" id="image-file" onchange="previewFile(this);" hidden="hidden"/>
         <div class="labels">
-            <input type="text", placeholder="Enter additional labels [optional]">
+            <input type="text" placeholder="Enter additional labels [optional]" id="additional-labels">
         </div>
-        <input type="submit" value="Upload"/>
+        <button onclick="uploadImage()" type="button">Upload Image</button>
     </div>
 
     <div class="container">
@@ -50,56 +49,19 @@
         </div>
 
         <div class="images">
-            <div class="image-box" data-name="spiderman">
-                <img src="../photos/photo1.jpeg" alt="">
+             <!-- <div class="image-box" data-name="spiderman">
+                <img src="../photo1.jpeg" alt="">
                 <h6>Wolves</h6>
-            </div>
-            <div class="image-box" data-name="joker">
-                <img src="../photos/photo2.jpeg" alt="">
-                <h6>Highway</h6>
-            </div>
-            <div class="image-box" data-name="ironman">
-                <img src="../photos/photo3.jpeg" alt="">
-                <h6>Woman</h6>
-            </div>
-            <div class="image-box" data-name="passenger">
-                <img src="../photos/photo4.jpeg" alt="">
-                <h6>Swamp</h6>
-            </div>
-            <div class="image-box" data-name="space">
-                <img src="../photos/photo5.jpeg" alt="">
-                <h6>Sky</h6>
-            </div>
-            <div class="image-box" data-name="spiderman">
-                <img src="../photos/photo6.jpeg" alt="">
-                <h6>Mountains</h6>
-            </div>
-            <div class="image-box" data-name="universe">
-                <img src="../photos/photo7.jpeg" alt="">
-                <h6>Ferris Wheel</h6>
-            </div>
-            <div class="image-box" data-name="spiderman">
-                <!--<img src="images/spiderman3.jpg" alt="">-->
-                <!-- <h6>spiderman 3</h6> -->
-            </div>
-            <div class="image-box" data-name="holiday">
-                <!--<img src="images/holiday.jpg" alt="">-->
-                <!-- <h6>holiday</h6> -->
-            </div>
-            <div class="image-box" data-name="ironman">
-                <!--<img src="images/ironman2.jpg" alt="">-->
-                <!-- <h6>ironman 2</h6> -->
-            </div>
+            </div> -->
         </div>
     </div>
 
-    <script>
+    <!-- <script>
 
         var sdk = apigClientFactory.newClient({});
   
-    </script>
+    </script> -->
 
     <script src="./assets/js/script.js"></script>
 </body>
 </html>
- 

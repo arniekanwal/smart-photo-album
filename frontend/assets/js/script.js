@@ -1,10 +1,11 @@
+// Searching Photos
 const search = document.querySelector(".search-box input"),
 images = document.querySelectorAll(".image-box");
 
 search.addEventListener("keyup", e =>{
 if(e.key == "Enter"){
-  let searcValue = search.value,
-      value = searcValue.toLowerCase();
+  let searchValue = search.value,
+      value = searchValue.toLowerCase();
       images.forEach(image =>{
           if(value === image.dataset.name){ //matching value with getting attribute of images
               return image.style.display = "block";
@@ -21,3 +22,60 @@ images.forEach(image =>{
   image.style.display = "block";
 })
 })
+
+// Uploading Images
+const fileButton = document.getElementById("image-file");
+
+function uploadImage() {
+  fileButton.click(); 
+}
+
+function previewFile(input) {
+  var reader = new FileReader();
+  photo = input.files[0].name;
+  fileExt = photo.split(".").pop();
+  
+  console.log("Extension type: ", fileExt);
+
+  var onlyname = photo.replace(/\.[^/.]+$/, "");
+  var finalName = onlyname+"."+fileExt;
+  photo = finalName;
+
+  reader.onload = function (e) {
+    var src = e.target.result;    
+    var newImage = document.createElement("img");
+    newImage.src = src;
+    encoded = newImage.outerHTML;
+
+    last_index_quote = encoded.lastIndexOf('"');
+    if (fileExt == 'jpg' || fileExt == 'jpeg' || fileExt == 'png') {
+      encodedStr = encoded.substring(33, last_index_quote);
+    }
+    else {
+      encodedStr = encoded.substring(32, last_index_quote);
+    }
+    var apigClient = apigClientFactory.newClient({});
+
+    var params = {
+        "key": photo,
+        "bucket": "smartphoto-b2",
+        "Content-Type": "*/*",
+    };
+
+    var additionalParams = {
+      headers: {
+        "Content-Type": "*/*",
+      }
+    };
+
+    apigClient.uploadBucketFilenamePut(params, encodedStr, additionalParams)
+      .then(function (result) {
+        console.log(result);
+        console.log('success OK');
+        alert("Photo Uploaded Successfully");
+      }).catch(function (result) {
+        console.log(result);
+      });
+    }
+   reader.readAsDataURL(input.files[0]);
+}

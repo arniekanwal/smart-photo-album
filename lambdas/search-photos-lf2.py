@@ -64,7 +64,8 @@ def lambda_handler(event, context):
     es_host = 'search-photos-x5sreqhncdhwvdz35exej4owri.us-east-1.es.amazonaws.com'  
 
     # Build an OpenSearch Query
-    labels = disambiguate_search()
+    labels = disambiguate_search(event)
+    print("Labels found: ", labels)
     query = ""
 
     opensearch_query(es_host, query)
