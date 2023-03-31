@@ -46,7 +46,7 @@ def opensearch_query(host, query):
     matching_images = []
     if es_result:
         for photo in es_result['hits']['hits']:
-            matching_images.append('s3://smartphoto-b2/'+photo['_id'])
+            matching_images.append('https://smartphoto-b2.s3.amazonaws.com/'+photo['_id'])
     else:
         print("OpenSearch timed out...")
 

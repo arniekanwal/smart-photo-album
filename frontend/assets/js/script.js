@@ -34,7 +34,6 @@ search.addEventListener("keyup", e =>{
     var sdk = apigClientFactory.newClient({});
 
     var body = {};
-    // var params = {q: value};
     var params = {q : value};
     var additionalParams = {headers: {
       'Content-Type':"application/json"
@@ -43,7 +42,7 @@ search.addEventListener("keyup", e =>{
     return sdk.searchGet(params, body , additionalParams).then(function(res){
       console.log("success");
       console.log(res);
-      // displayImages(res.data)
+      displayImages(res.data)
     }).catch(function(result){
         console.log(result);
         console.log("NO RESULT");
@@ -51,8 +50,20 @@ search.addEventListener("keyup", e =>{
   }
 });
 
-function displayImages() {
+function displayImages(result) {
+  var results=result.body.imagePaths
 
+  var imageContainer = document.getElementById("image-container");
+  for (var i = 0; i < results.length; i++) {
+    var newimg = document.createElement("div");
+    newimg.className = "image-box";
+
+    var source = document.createElement("img");
+    source.src = results[i];
+    
+    newimg.appendChild(source);
+    imageContainer.appendChild(newimg);
+  }
 }
 
 // ------------------------------
