@@ -1,6 +1,7 @@
 import boto3
 import time
 import os
+import json
 from opensearchpy import OpenSearch, RequestsHttpConnection 
 
 '''
@@ -12,19 +13,16 @@ def disambiguate_search(event):
     client = boto3.client('lex-runtime')
 
     response = client.post_text(botName='PhotoSearchBot', botAlias='dev', userId='myuser',
-                                inputText=event['messages'][0]['unstructured']['text'])
+                                inputText=event['q'])
     
-    bot_response = response['message']
-
-    return {
-        'statusCode': 200,
-        'messages': [{
-            'type': 'unstructured',
-            'unstructured': {
-                'text': bot_response
-            }
-        }]
-    }    
+    print("Response: ", response)
+    
+    slots = response['slots']['searchterm']
+    labels = slots.split()
+    for i in range(len(labels)):
+        labels[i] = labels[i].lower()
+        
+    return labels
     
 
 
@@ -42,10 +40,17 @@ def opensearch_query(host, query):
         verify_certs = True,
         connection_class = RequestsHttpConnection
     )
-    print("Client Info: ", client.info())
     
     es_result=client.search(index="photos", body=query)    # response=es.get()
-    return es_result
+
+    matching_images = []
+    if es_result:
+        for photo in es_result['hits']['hits']:
+            matching_images.append('s3://smartphoto-b2/'+photo['_id'])
+    else:
+        print("OpenSearch timed out...")
+
+    return matching_images
 
 
 """ --- Main handler --- """
@@ -66,9 +71,36 @@ def lambda_handler(event, context):
     # Build an OpenSearch Query
     labels = disambiguate_search(event)
     print("Labels found: ", labels)
-    query = ""
+    
+    query = {
+        "query": {
+            "terms": {
+                "labels": labels
+            }
+        }
+    }
 
-    opensearch_query(es_host, query)
+    search_results = opensearch_query(es_host, query)
+    print("images found: ", search_results)
+    
+    if not search_results:
+        return{
+            'statusCode':200,
+            "headers": {"Access-Control-Allow-Origin":"*"},
+            'body': json.dumps('No Results found')
+        }
+    else:    
+        return{
+            'statusCode': 200,
+            'headers': {"Access-Control-Allow-Origin":"*"},
+            'body': {
+                'imagePaths':search_results
+            },
+            'isBase64Encoded': False
+        }
+    
+
+    
            
 
 
