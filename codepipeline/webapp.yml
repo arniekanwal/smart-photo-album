@@ -5,8 +5,8 @@ artifacts:
     - frontend/assets/css/*
     - frontend/assets/js/*
     - frontend/assets/js/sdk/*
-    - frontend/assets/js/lib/apiGatewayCore/*
-    - frontend/assets/js/lib/axios/dist/*
-    - frontend/assets/js/lib/CryptoJS/components/*
-    - frontend/assets/js/lib/CryptoJS/rollups/*
-    - frontend/assets/js/lib/CryptoJS/url-template/*
+    - frontend/assets/js/sdk/lib/apiGatewayCore/*
+    - frontend/assets/js/sdk/lib/axios/dist/*
+    - frontend/assets/js/sdk/lib/CryptoJS/components/*
+    - frontend/assets/js/sdk/lib/CryptoJS/rollups/*
+    - frontend/assets/js/sdk/lib/CryptoJS/url-template/*
