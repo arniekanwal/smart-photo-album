@@ -2,21 +2,32 @@
 // Searching and Displaying Photos
 // ------------------------------
 
+var name = '';
+var encoded = null;
+var fileExt = null;
+var SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+const synth = window.speechSynthesis;
+const recognition = new SpeechRecognition();
+const icon = document.querySelector('i.fa.fa-microphone');
+
 const search = document.querySelector(".search-box input"),
 images = document.querySelectorAll(".image-box");
 
-// search.addEventListener("keyup", e =>{
-// if(e.key == "Enter"){
-//   let searchValue = search.value,
-//       value = searchValue.toLowerCase();
-//       images.forEach(image =>{
-//           if(value === image.dataset.name){ //matching value with getting attribute of images
-//               return image.style.display = "block";
-//           }
-//           image.style.display = "none";
-//    });
-// }
-// });
+function voiceToText() {
+  recognition.start();
+  recognition.onresult = (event) => {
+    const speechToText = event.results[0][0].transcript;
+    console.log(speechToText);
+    search.value = speechToText;
+    
+    var params = {q: search.value.toLowerCase()};
+    var additionalParams = {headers: {
+      'Content-Type':"application/json"
+    }};
+
+    return searchApiCall(params, {}, additionalParams);
+  }
+}
 
 search.addEventListener("keyup", () =>{
 if(search.value != "") return;
@@ -31,24 +42,32 @@ search.addEventListener("keyup", e =>{
     let searchValue = search.value,
     value = searchValue.toLowerCase();
 
-    var sdk = apigClientFactory.newClient({});
-
     var body = {};
     var params = {q : value};
     var additionalParams = {headers: {
       'Content-Type':"application/json"
     }};
 
-    return sdk.searchGet(params, body , additionalParams).then(function(res){
-      console.log("success");
-      console.log(res);
-      displayImages(res.data)
-    }).catch(function(result){
-        console.log(result);
-        console.log("NO RESULT");
-    });
+    return searchApiCall(params, body, additionalParams);
   }
 });
+
+function searchApiCall(params, body, additionalParams) {
+  // clean up from last search by removing old photos
+  // var elem = document.getElementsByClassName("image-box")
+  // elem.parentNode.removeChild(elem);
+
+  var sdk = apigClientFactory.newClient({});
+
+  return sdk.searchGet(params, body , additionalParams).then(function(res){
+    console.log("success");
+    console.log(res);
+    displayImages(res.data)
+  }).catch(function(result){
+      console.log(result);
+      console.log("NO RESULT");
+  });
+}
 
 function displayImages(result) {
   var results=result.body.imagePaths
@@ -111,6 +130,7 @@ function previewFile(input) {
     var additionalParams = {
       headers: {
         "Content-Type": "*/*",
+        'Access-Control-Allow-Origin': '*',
       }
     };
 
