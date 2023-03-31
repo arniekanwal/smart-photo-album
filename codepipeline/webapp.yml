@@ -3,6 +3,7 @@ artifacts:
   files:
     - '**/*'
   base-directory: 'frontend'
+  discard-paths: false
   # files:
   #   - frontend/*
   #   - frontend/assets/css/*
