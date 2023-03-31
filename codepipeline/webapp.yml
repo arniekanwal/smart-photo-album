@@ -2,7 +2,7 @@ version: 0.2
 artifacts:
   files:
     - frontend/*
-    - frontend/assets/cs/*
+    - frontend/assets/css/*
     - frontend/assets/js/*
     - frontend/assets/js/sdk/*
     - frontend/assets/js/lib/apiGatewayCore/*
@@ -10,4 +10,3 @@ artifacts:
     - frontend/assets/js/lib/CryptoJS/components/*
     - frontend/assets/js/lib/CryptoJS/rollups/*
     - frontend/assets/js/lib/CryptoJS/url-template/*
-    
