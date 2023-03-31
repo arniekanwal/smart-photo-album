@@ -1,19 +1,22 @@
-// Searching Photos
+// ------------------------------
+// Searching and Displaying Photos
+// ------------------------------
+
 const search = document.querySelector(".search-box input"),
 images = document.querySelectorAll(".image-box");
 
-search.addEventListener("keyup", e =>{
-if(e.key == "Enter"){
-  let searchValue = search.value,
-      value = searchValue.toLowerCase();
-      images.forEach(image =>{
-          if(value === image.dataset.name){ //matching value with getting attribute of images
-              return image.style.display = "block";
-          }
-          image.style.display = "none";
-   });
-}
-});
+// search.addEventListener("keyup", e =>{
+// if(e.key == "Enter"){
+//   let searchValue = search.value,
+//       value = searchValue.toLowerCase();
+//       images.forEach(image =>{
+//           if(value === image.dataset.name){ //matching value with getting attribute of images
+//               return image.style.display = "block";
+//           }
+//           image.style.display = "none";
+//    });
+// }
+// });
 
 search.addEventListener("keyup", () =>{
 if(search.value != "") return;
@@ -23,7 +26,39 @@ images.forEach(image =>{
 })
 })
 
+search.addEventListener("keyup", e =>{
+  if(e.key == "Enter"){
+    let searchValue = search.value,
+    value = searchValue.toLowerCase();
+
+    var sdk = apigClientFactory.newClient({});
+
+    var body = {};
+    // var params = {q: value};
+    var params = {q : value};
+    var additionalParams = {headers: {
+      'Content-Type':"application/json"
+    }};
+
+    return sdk.searchGet(params, body , additionalParams).then(function(res){
+      console.log("success");
+      console.log(res);
+      // displayImages(res.data)
+    }).catch(function(result){
+        console.log(result);
+        console.log("NO RESULT");
+    });
+  }
+});
+
+function displayImages() {
+
+}
+
+// ------------------------------
 // Uploading Images
+// ------------------------------
+
 const fileButton = document.getElementById("image-file");
 
 function uploadImage() {
@@ -54,10 +89,10 @@ function previewFile(input) {
     else {
       encodedStr = encoded.substring(32, last_index_quote);
     }
-    var apigClient = apigClientFactory.newClient({});
+    var sdk = apigClientFactory.newClient({});
 
     var params = {
-        "key": photo,
+        "filename": photo,
         "bucket": "smartphoto-b2",
         "Content-Type": "*/*",
     };
@@ -68,7 +103,7 @@ function previewFile(input) {
       }
     };
 
-    apigClient.uploadBucketFilenamePut(params, encodedStr, additionalParams)
+    sdk.uploadBucketFilenamePut(params, encodedStr, additionalParams)
       .then(function (result) {
         console.log(result);
         console.log('success OK');
