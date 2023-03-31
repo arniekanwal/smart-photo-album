@@ -1,12 +1,15 @@
 version: 0.2
 artifacts:
   files:
-    - frontend/*
-    - frontend/assets/css/*
-    - frontend/assets/js/*
-    - frontend/assets/js/sdk/*
-    - frontend/assets/js/sdk/lib/apiGatewayCore/*
-    - frontend/assets/js/sdk/lib/axios/dist/*
-    - frontend/assets/js/sdk/lib/CryptoJS/components/*
-    - frontend/assets/js/sdk/lib/CryptoJS/rollups/*
-    - frontend/assets/js/sdk/lib/CryptoJS/url-template/*
+    - '**/*'
+  base-directory: 'frontend'
+  # files:
+  #   - frontend/*
+  #   - frontend/assets/css/*
+  #   - frontend/assets/js/*
+  #   - frontend/assets/js/sdk/*
+  #   - frontend/assets/js/sdk/lib/apiGatewayCore/*
+  #   - frontend/assets/js/sdk/lib/axios/dist/*
+  #   - frontend/assets/js/sdk/lib/CryptoJS/components/*
+  #   - frontend/assets/js/sdk/lib/CryptoJS/rollups/*
+  #   - frontend/assets/js/sdk/lib/CryptoJS/url-template/*
