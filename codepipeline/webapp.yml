@@ -1,13 +1,21 @@
 version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 10
+  pre_build:
+    commands:
+      - echo "Installing dependencies..."
+      - npm install
+  build:
+    commands:
+      - echo "Building app..."
+      - npm run build
+      - echo "Uploading to S3..."
+      - aws s3 sync build/ s3://smartphoto-b2
+
 artifacts:
-  base-directory: 'frontend'
   files:
-    - /*
-    - assets/css/*
-    - assets/js/*
-    - assets/js/sdk/*
-    - assets/js/sdk/lib/apiGatewayCore/*
-    - assets/js/sdk/lib/axios/dist/*
-    - assets/js/sdk/lib/CryptoJS/components/*
-    - assets/js/sdk/lib/CryptoJS/rollups/*
-    - assets/js/sdk/lib/CryptoJS/url-template/*
+    - '**/*'
+  name: 'frontend'
