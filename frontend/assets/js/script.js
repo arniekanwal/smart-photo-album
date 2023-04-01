@@ -52,10 +52,16 @@ search.addEventListener("keyup", e =>{
   }
 });
 
+function removeElementsByClass(className){
+  const elements = document.getElementsByClassName(className);
+  while(elements.length > 0){
+      elements[0].parentNode.removeChild(elements[0]);
+  }
+}
+
 function searchApiCall(params, body, additionalParams) {
   // clean up from last search by removing old photos
-  // var elem = document.getElementsByClassName("image-box")
-  // elem.parentNode.removeChild(elem);
+  removeElementsByClass("image-box");
 
   var sdk = apigClientFactory.newClient({});
 
