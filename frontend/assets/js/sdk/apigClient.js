@@ -119,39 +119,39 @@ apigClientFactory.newClient = function (config) {
     };
     
     
-    apigClient.uploadBucketFilenamePut = function (params, body, additionalParams) {
+    apigClient.uploadItemPut = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        apiGateway.core.utils.assertParametersDefined(params, ['filename', 'bucket'], ['body']);
+        apiGateway.core.utils.assertParametersDefined(params, ['item', 'Content-Type', 'x-amz-meta-customLabels'], ['body']);
         
-        var uploadBucketFilenamePutRequest = {
+        var uploadItemPutRequest = {
             verb: 'put'.toUpperCase(),
-            path: pathComponent + uritemplate('/upload/{bucket}/{filename}').expand(apiGateway.core.utils.parseParametersToObject(params, ['filename', 'bucket'])),
-            headers: apiGateway.core.utils.parseParametersToObject(params, []),
+            path: pathComponent + uritemplate('/upload/{item}').expand(apiGateway.core.utils.parseParametersToObject(params, ['item', ])),
+            headers: apiGateway.core.utils.parseParametersToObject(params, ['Content-Type', 'x-amz-meta-customLabels']),
             queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
             body: body
         };
         
         
-        return apiGatewayClient.makeRequest(uploadBucketFilenamePutRequest, authType, additionalParams, config.apiKey);
+        return apiGatewayClient.makeRequest(uploadItemPutRequest, authType, additionalParams, config.apiKey);
     };
     
     
-    apigClient.uploadBucketFilenameOptions = function (params, body, additionalParams) {
+    apigClient.uploadItemOptions = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        apiGateway.core.utils.assertParametersDefined(params, [], ['body']);
+        apiGateway.core.utils.assertParametersDefined(params, ['item'], ['body']);
         
-        var uploadBucketFilenameOptionsRequest = {
+        var uploadItemOptionsRequest = {
             verb: 'options'.toUpperCase(),
-            path: pathComponent + uritemplate('/upload/{bucket}/{filename}').expand(apiGateway.core.utils.parseParametersToObject(params, [])),
+            path: pathComponent + uritemplate('/upload/{item}').expand(apiGateway.core.utils.parseParametersToObject(params, ['item'])),
             headers: apiGateway.core.utils.parseParametersToObject(params, []),
             queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
             body: body
         };
         
         
-        return apiGatewayClient.makeRequest(uploadBucketFilenameOptionsRequest, authType, additionalParams, config.apiKey);
+        return apiGatewayClient.makeRequest(uploadItemOptionsRequest, authType, additionalParams, config.apiKey);
     };
     
 

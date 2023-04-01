@@ -122,19 +122,18 @@ function previewFile(input) {
     var sdk = apigClientFactory.newClient({});
 
     var params = {
-        "filename": photo,
-        "bucket": "smartphoto-b2",
+        item: photo,
         "Content-Type": "*/*",
+        "x-amz-meta-customLabels": ""
     };
 
     var additionalParams = {
       headers: {
-        "Content-Type": "*/*",
-        'Access-Control-Allow-Origin': '*',
+        "Content-Type": "*/*"
       }
     };
 
-    sdk.uploadBucketFilenamePut(params, encodedStr, additionalParams)
+    return sdk.uploadItemPut(params, encodedStr, additionalParams) 
       .then(function (result) {
         console.log(result);
         console.log('success OK');
