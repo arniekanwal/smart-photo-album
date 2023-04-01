@@ -9,7 +9,7 @@ phases:
       - echo "No pre-build required"
   build:
     commands:
-      - aws s3 sync frontend/ s3://my-s3-bucket --delete
+      - aws s3 sync frontend/ s3://smartphoto-b2 --delete
 artifacts:
   files:
     - '**/*'
