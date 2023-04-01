@@ -1,21 +1,10 @@
 version: 0.2
 
 phases:
-  install:
-    runtime-versions:
-      nodejs: 10
-  pre_build:
-    commands:
-      - echo "Installing dependencies..."
-      - npm install
   build:
     commands:
-      - echo "Building app..."
-      - npm run build
-      - echo "Uploading to S3..."
-      - aws s3 sync build/ s3://smartphoto-b2
+      - cd frontend
 
 artifacts:
   files:
     - '**/*'
-  name: 'frontend'
