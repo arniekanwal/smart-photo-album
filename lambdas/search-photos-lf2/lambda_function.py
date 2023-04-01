@@ -62,6 +62,7 @@ def lambda_handler(event, context):
     The JSON body of the request is provided in the event slot.
     """
     # By default, treat the user request as coming from the America/New_York time zone.
+    print("starting search...")
     os.environ['TZ'] = 'America/New_York'
     time.tzset()
 
