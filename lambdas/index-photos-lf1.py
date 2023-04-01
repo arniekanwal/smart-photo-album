@@ -1,6 +1,8 @@
 import boto3
-import urllib.parse
 import os
+import time
+import urllib.parse
+import base64
 from opensearchpy import OpenSearch, RequestsHttpConnection    
 
 def lambda_handler(event, context):
@@ -8,11 +10,19 @@ def lambda_handler(event, context):
 
     # Grab bucket and object-key
     bucket = event['Records'][0]['s3']['bucket']['name']
-    key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
+    key = event['Records'][0]['s3']['object']['key']
+    
+    # retrieve the object
+    obj = s3.get_object(Bucket=bucket, Key=key)
+    body = obj['Body'].read().decode('utf-8')
+    image = base64.b64decode(body)   
 
-    # Use head_object to retrieve S3 Metadata
-    response = s3.head_object(Bucket=bucket, Key=key)
-    metadata = response['ResponseMetadata']['HTTPHeaders']['date'] # retrieve creation date (x-amz-meta-customLabels)
+    s3.delete_object(Bucket=bucket,Key=key)
+    s3.put_object(Bucket=bucket, Body=image, Key=key,ContentType='image/jpeg')
+
+    # update key
+    key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
+    metadata = time.time()
 
     # Collect labels from Rekognition 
     labels = detect_labels(key, bucket)
@@ -25,7 +35,6 @@ def lambda_handler(event, context):
     }
 
     add_to_opensearch(photo_object, key)
-
 
 def detect_labels(photo, bucket):
     rekognition_client = boto3.client("rekognition")
@@ -41,7 +50,8 @@ def detect_labels(photo, bucket):
     detected_labels = []
     for label in response['Labels']:
         detected_labels.append(label['Name'].lower())
-        
+    
+    print("Labels: ", detected_labels)
     return detected_labels
 
 
