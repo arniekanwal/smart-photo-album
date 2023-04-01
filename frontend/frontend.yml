@@ -12,4 +12,8 @@ phases:
       - cd frontend
 artifacts:
   files:
-    - '**/*'
+    - 'frontend/*'
+    - '!backend'
+    - '!lambdas'
+    - '!.gitignore'
+    - '!README.md'
