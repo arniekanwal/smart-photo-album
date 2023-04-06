@@ -43,10 +43,10 @@ Resources:
                 Action: "*"
                 Resource: "*"
 
-  Smartphoto-B1:
+  Smartphotob1:
     Type: "AWS::S3::Bucket"
 
-  Smartphoto-B2:
+  Smartphotob2:
     Type: "AWS::S3::Bucket"
 
   FrontendCodePipeline:
