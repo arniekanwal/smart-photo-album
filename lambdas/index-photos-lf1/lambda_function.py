@@ -76,7 +76,7 @@ def add_to_opensearch(body, key):
         refresh = True
     )
     print("Add document: ", response)
-
+    print("Hello")
     
 
     
