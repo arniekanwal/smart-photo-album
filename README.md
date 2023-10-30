@@ -1,8 +1,4 @@
 # _Smart-Photo-Album_
 
-CS-GY 9223 Cloud Computing and Big Data
-Assignment 2
-
-## _Description_
-
-This is a smart photo album hosted and developed with AWS Suite and served as a wep application. It uses tools such as Lex Chatbot, ElasticSearch, and Reckognition to perform "smart" searches through voice and text and query photos by people, objects, landmarks and more.
+Cloud based web application developed with AWS to host photo albums and perform "smart" search lookups through voice or text. It uses services such as AWS Lex Chatbot, ElasticSearch, Rekognition, and Transcribe. After uploading photos to an album, image labels will be automatically processed and stored to an ElasticSearch instance and queries are dismantled with Lex Chatbot to match key words
+and perform "smart" photo lookups.
