@@ -25,7 +25,7 @@ function voiceToText() {
       'Content-Type':"application/json"
     }};
 
-    return searchApiCall(params, {}, additionalParams);
+    return searchForPhotos(params, {}, additionalParams);
   }
 }
 
@@ -48,7 +48,7 @@ search.addEventListener("keyup", e =>{
       'Content-Type':"application/json"
     }};
 
-    return searchApiCall(params, body, additionalParams);
+    return searchForPhotos(params, body, additionalParams);
   }
 });
 
@@ -59,7 +59,7 @@ function removeElementsByClass(className){
   }
 }
 
-function searchApiCall(params, body, additionalParams) {
+function searchForPhotos(params, body, additionalParams) {
   // clean up from last search by removing old photos
   removeElementsByClass("image-box");
 

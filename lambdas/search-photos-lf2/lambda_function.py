@@ -4,12 +4,13 @@ import os
 import json
 from opensearchpy import OpenSearch, RequestsHttpConnection 
 
-'''
-Sends search query to Lex bot and disambiguates the responses.
-Returns the slots/labels for SearchIntent which are used
-for returning results from OpenSearch
-'''
-def disambiguate_search(event):
+def disambiguate_search(event) -> list[str]:
+    '''
+    Sends search query to Lex bot and disambiguates the responses.
+    Returns the slots/labels for SearchIntent which are used
+    for returning results from OpenSearch
+    '''
+
     client = boto3.client('lex-runtime')
 
     response = client.post_text(botName='PhotoSearchBot', botAlias='dev', userId='myuser',
@@ -26,11 +27,12 @@ def disambiguate_search(event):
     
 
 
-'''
-Take provided labels and query for matching results/photos
-from our OpenSearch instance
-'''
 def opensearch_query(host, query):
+    '''
+    Take provided labels and query for matching results/photos
+    from our OpenSearch instance
+    '''
+
     auth = (os.getenv("opensearch_user"), os.getenv("opensearch_pwd"))
 
     client = OpenSearch(
@@ -52,15 +54,12 @@ def opensearch_query(host, query):
 
     return matching_images
 
-
-""" --- Main handler --- """
-
-
 def lambda_handler(event, context):
     """
     Route the incoming request based on intent.
     The JSON body of the request is provided in the event slot.
     """
+    
     # By default, treat the user request as coming from the America/New_York time zone.
     print("starting search...")
     os.environ['TZ'] = 'America/New_York'
@@ -75,9 +74,7 @@ def lambda_handler(event, context):
     
     query = {
         "query": {
-            "terms": {
-                "labels": labels
-            }
+            "terms": {"labels": labels}
         }
     }
 
@@ -91,7 +88,7 @@ def lambda_handler(event, context):
             'body': json.dumps('No Results found')
         }
     else:    
-        return{
+        return {
             'statusCode': 200,
             'headers': {"Access-Control-Allow-Origin":"*"},
             'body': {
@@ -99,11 +96,3 @@ def lambda_handler(event, context):
             },
             'isBase64Encoded': False
         }
-    
-
-    
-           
-
-
-
-

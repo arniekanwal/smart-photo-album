@@ -34,17 +34,18 @@ def lambda_handler(event, context):
         "labels": labels,
     }
 
+    # Add labels to photos index in OpenSearch instance
     add_to_opensearch(photo_object, key)
 
-def detect_labels(photo, bucket):
+def detect_labels(photo, bucket) -> list[str]:
     rekognition_client = boto3.client("rekognition")
 
-    response = rekognition_client.detect_labels(Image={'S3Object':{'Bucket':bucket,'Name':photo}},
-    MaxLabels=10,
-    # Uncomment to use image properties and filtration settings
-    #Features=["GENERAL_LABELS", "IMAGE_PROPERTIES"],
-    #Settings={"GeneralLabels": {"LabelInclusionFilters":["Cat"]},
-    # "ImageProperties": {"MaxDominantColors":10}}
+    response = rekognition_client.detect_labels(
+        Image={'S3Object':{'Bucket':bucket,'Name':photo}},
+        MaxLabels=10,
+        # Features=["GENERAL_LABELS", "IMAGE_PROPERTIES"],
+        # Settings={"GeneralLabels": {"LabelInclusionFilters":["Cat"]},
+        # "ImageProperties": {"MaxDominantColors":10}}
     )
 
     detected_labels = []
@@ -55,7 +56,7 @@ def detect_labels(photo, bucket):
     return detected_labels
 
 
-def add_to_opensearch(body, key):
+def add_to_opensearch(body, key) -> None:
     host = 'search-photos-x5sreqhncdhwvdz35exej4owri.us-east-1.es.amazonaws.com' 
 
     auth = (os.getenv("opensearch_user"), os.getenv("opensearch_pwd"))
@@ -76,13 +77,4 @@ def add_to_opensearch(body, key):
         refresh = True
     )
     print("Add document: ", response)
-
-
-print("Hello World")
-    
-
-    
-
-
-
 
