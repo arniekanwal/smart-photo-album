@@ -7,39 +7,31 @@ phases:
       - echo "Installing dependencies LF1..."
       - cd lambdas/index-photos-lf1
       - pip install -r requirements.txt -t lib
-      - cd ..
-      - cd ..
+      - cd ~
       - echo "Installing dependencies LF2..."
       - cd lambdas/search-photos-lf2
       - pip install -r requirements.txt -t lib
-      - cd ..
-      - cd ..
+      - cd ~
   build:
     commands:
       - echo "Zipping deployment package LF1..."
       - cd lambdas/index-photos-lf1/lib
       - zip -r9 ../deployment_package.zip .
-      - cd ..
       - zip -g deployment_package.zip lambda_function.py
-      - cd ..
-      - cd ..
+      - cd ~
       - echo "Zipping deployment package LF2..."
       - cd lambdas/search-photos-lf2/lib
       - zip -r9 ../deployment_package.zip .
-      - cd ..
       - zip -g deployment_package.zip lambda_function.py
-      - cd ..
-      - cd ..
+      - cd ~
   post_build:
     commands:
       - echo "Updating LF1..."
       - cd lambdas/index-photos-lf1
       - aws lambda update-function-code --function-name index-photos-lf1 --zip-file fileb://deployment_package.zip
-      - cd ..
-      - cd ..
+      - cd ~
       - echo "Updating LF2..."
       - cd lambdas/search-photos-lf2
       - aws lambda update-function-code --function-name search-photos-lf2 --zip-file fileb://deployment_package.zip
-      - cd ..
-      - cd ..
+      - cd ~
       - echo "DONE!!"
